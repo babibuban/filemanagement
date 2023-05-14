@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct file {
+  char name[50];
+  char content[500];
+};
+
+void create_file() {
+  struct file f;
+  printf("Enter file name: ");
+  scanf("%s", f.name);
+  printf("Enter file content: ");
+  scanf(" %[^\n]s", f.content);
+
+  FILE *fp;
+  fp = fopen(f.name, "w");
+  if (fp == NULL) {
+    printf("Error creating file!\n");
+    return;
+  }
+  fprintf(fp, "%s", f.content);
+  fclose(fp);
+  printf("File created successfully!\n");
+}
+
+void read_file() {
+  char name[50];
+  printf("Enter file name: ");
+  scanf("%s", name);
+
+  FILE *fp;
+  fp = fopen(name, "r");
+  if (fp == NULL) {
+    printf("Error reading file!\n");
+    return;
+  }
+  char ch;
+  while ((ch = fgetc(fp)) != EOF) {
+    printf("%c", ch);
+  }
+  fclose(fp);
+}
+
+void update_file() {
+  struct file f;
+  printf("Enter file name: ");
+  scanf("%s", f.name);
+
+  FILE *fp;
+  fp = fopen(f.name, "r");
+  if (fp == NULL) {
+    printf("Error updating file!\n");
+    return;
+  }
+  char ch;
+  int i = 0;
+  while ((ch = fgetc(fp)) != EOF) {
+    f.content[i++] = ch;
+  }
+  fclose(fp);
+
+  printf("Enter new content: ");
+  scanf(" %[^\n]s", f.content);
+
+  fp = fopen(f.name, "w");
+  if (fp == NULL) {
+    printf("Error updating file!\n");
+    return;
+  }
+  fprintf(fp, "%s", f.content);
+  fclose(fp);
+  printf("File updated successfully!\n");
+}
+
+void delete_file() {
+  char name[50];
+  printf("Enter file name: ");
+  scanf("%s", name);
+
+  int status = remove(name);
+  if (status == 0) {
+    printf("File deleted successfully!\n");
+  } else {
+    printf("Error deleting file!\n");
+  }
+}
+
+int main() {
+  int choice;
+
+  do {
+    printf("\nFile Management System\n");
+    printf("1. Create file\n");
+    printf("2. Read file\n");
+    printf("3. Update file\n");
+    printf("4. Delete file\n");
+    printf("5. Exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+      case 1:
+        create_file();
+        break;
+      case 2:
+        read_file();
+        break;
+      case 3:
+        update_file();
+        break;
+      case 4:
+        delete_file();
+        break;
+      case 5:
+        printf("Exiting...\n");
+        break;
+      default:
+        printf("Invalid choice!\n");
+        break;
+    }
+  } while (choice != 5);
+
+  return 0;
+}
